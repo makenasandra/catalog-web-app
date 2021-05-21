@@ -1,0 +1,274 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "H Plus Sports API",
+    "version": "1.0.0"
+  },
+  "tags": [
+    {
+      "name": "Article",
+      "description": "Articles for the H Plus Sport Blog"
+    },
+    {
+      "name": "Product",
+      "description": "Products in the catalog"
+    }
+  ],
+  "paths": {
+    "/article": {
+      "get": {
+        "tags": [
+          "Article"
+        ],
+        "responses": {
+          "200": {
+            "description": "Page of Articles",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/article"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Article"
+        ],
+        "description": "Add a new article",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/article"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Article Creation sucessful"
+          }
+        }
+      }
+    },
+    "/product/{productId}": {
+      "get": {
+        "tags": [
+          "Product"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "productId",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "example": 134
+            }
+          },
+          {
+            "in": "header",
+            "name": "customer-security-header",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "example": "12312-323423-2323"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "This is a list of the products available in the catalog",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Product"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/Product"
+                }
+              }
+            }
+          },
+          "500": {
+            "$ref": "#/components/responses/500ApiError"
+          }
+        }
+      }
+    },
+    "/product": {
+      "post": {
+        "tags": [
+          "Product"
+        ],
+        "description": "Add a product to the catalog",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Product"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The product has been added to the catalog."
+          },
+          "500": {
+            "$ref": "#/components/responses/500ApiError"
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "Product"
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/PageNumber"
+          },
+          {
+            "$ref": "#/components/parameters/PageSize"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "This is a list of the products in the catalog",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "properties": {
+                      "id": {
+                        "type": "integer",
+                        "example": 400
+                      },
+                      "name": {
+                        "type": "string",
+                        "example": "Lemon Water"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "$ref": "#/components/responses/500ApiError"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "parameters": {
+      "PageNumber": {
+        "in": "query",
+        "name": "pageNumber",
+        "description": "Page number to return",
+        "required": false,
+        "schema": {
+          "type": "integer",
+          "example": 1
+        }
+      },
+      "PageSize": {
+        "in": "query",
+        "name": "pageSize",
+        "description": "Number of results in the page",
+        "required": false,
+        "schema": {
+          "type": "integer",
+          "example": 10,
+          "maximum": 100
+        }
+      }
+    },
+    "schemas": {
+      "article": {
+        "type": "object",
+        "properties": {
+          "createdDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "tagline": {
+            "type": "string"
+          },
+          "content": {
+            "type": "string"
+          },
+          "category": {
+            "type": "string"
+          },
+          "tags": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "Product": {
+        "type": "object",
+        "required": [
+          "name"
+        ],
+        "properties": {
+          "id": {
+            "type": "integer",
+            "example": 400
+          },
+          "name": {
+            "type": "string",
+            "example": "Lemon Water"
+          },
+          "description": {
+            "type": "string",
+            "example": "Lemon Flavored Water"
+          },
+          "image_title": {
+            "type": "string",
+            "example": "mineral-water-lemon-lime"
+          },
+          "image": {
+            "type": "string",
+            "example": "https://hplussport.com/images/1234"
+          }
+        }
+      }
+    },
+    "responses": {
+      "500ApiError": {
+        "description": "This is an unexpected error",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "statusCode": {
+                  "type": "string",
+                  "example": 500
+                },
+                "message": {
+                  "type": "string",
+                  "example": "This is an error message"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
